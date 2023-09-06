@@ -7,10 +7,36 @@ const Header = ({text}) => {
   )
 }
 
-const Stats = ({text, value}) => {
+const StaticsLine = ({text, value}) => {
   return (
     <p>{text} {value}</p>
   )
+}
+
+const Statistics = ({values}) => {
+  let total = values[0] + values[1] + values[2];
+  if (total > 0){
+    let average =  (values[0] - values[2]) / total;
+    let positive = values[0] / total * 100
+
+    return (
+      <div>
+        <StaticsLine text="good" value={values[0]}/>
+        <StaticsLine text="neutral" value={values[1]}/>
+        <StaticsLine text="bad" value={values[2]}/>
+        <StaticsLine text="all" value={total}/>
+        <StaticsLine text="average" value={average}/>
+        <StaticsLine text="positive" value={positive}/>
+
+      </div>
+    )
+  }
+  return (
+      <div>
+        <p>No feedbacks given</p>
+      </div>
+    )
+  
 }
 
 const Button = (props) => (
@@ -34,9 +60,7 @@ const App = () => {
       <Button handleClick={() => setNeutral(neutral + 1)} text="neutral"/>
       <Button handleClick={() => setBad(bad + 1)} text="bad"/>
       <Header text="statistics"/>
-      <Stats text="good" value={good} />
-      <Stats text="neutral" value={neutral} />
-      <Stats text="bad" value={bad} />
+      <Statistics values={[good, neutral, bad]}/>
 
     </div>
   )
