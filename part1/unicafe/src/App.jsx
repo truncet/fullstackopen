@@ -8,8 +8,16 @@ const Header = ({text}) => {
 }
 
 const StaticsLine = ({text, value}) => {
+  const style = {width: '60px'}
   return (
-    <p>{text} {value}</p>
+    <table >
+      <tbody>
+      <tr>
+        <td style={style}>{text}</td>
+        <td>{value}</td>
+      </tr>
+    </tbody>
+    </table>
   )
 }
 
@@ -49,6 +57,7 @@ const Button = (props) => (
 
 const App = () => {
   // save clicks of each button to its own state
+  
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
