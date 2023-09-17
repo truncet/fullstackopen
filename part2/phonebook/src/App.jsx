@@ -23,9 +23,9 @@ const PersonForm = ({addNewName, newName, newPhone, handleNameChange, handlePhon
   )
 }
 
-const Persons = ({personToShow}) => {
+const Persons = ({personToShow, deleteChange}) => {
   return (    
-      personToShow.map(person => <p key={person.name}> {person.name} {person.number}</p>)
+      personToShow.map(person => <p key={person.name}> {person.name} {person.number} <button value={person.name} onClick={deleteChange}>Delete</button></p> )
   )
 }
 
@@ -56,24 +56,56 @@ useEffect(() => {
     setSearchValue(newFilter);
     setShowVal(newFilter === "")
   }
+  
+  const getPersonByname = (name) => {
+    return persons.find(person => person.name == name);
+
+  }
+
+  const deletePersons = (event) => {
+    var name = event.target.value;
+    var person = getPersonByname(name);
+    console.log(person);
+    if (person){
+      if(confirm(`Do you want to delete ${person.name}`)){
+        personService.deleteEntries(person.id).then(response => {
+          setPersons(persons.filter((person) => person.name != name))
+        })
+      }
+    }
+  }
 
   const addNewName = (event) => {
     event.preventDefault();
     var found = false;
     persons.map((person)=> {
       if (person.name === newName){
-        alert(`${newName} already exists in you contanct list`)
+        if(confirm(`${person.name} is already in phonebook. Do you want to replace their old number with new one?`)){
+          let updatedPerson = {
+            name: person.name,
+            number: newPhone,
+            id: person.id
+          }
+          personService.update(person.id, updatedPerson).then(
+            response => {
+              setPersons(persons.map(existingPerson => updatedPerson.id != existingPerson.id ? existingPerson: updatedPerson))
+            }
+          )
+        }
         found = true
       }
 
     })
     if (found) return;
+    let new_id = persons.length + 1;
     const person = {
       name: newName,
-      number: newPhone
+      number: newPhone,
+      id: new_id
     }
-    setPersons(persons.concat(person));
+    
     personService.create(person).then(response => {
+      setPersons(persons.concat(person));
       setNewName('');
       setNewPhone('');
     })
@@ -87,7 +119,7 @@ useEffect(() => {
       <h2>Add a new</h2>
       <PersonForm addNewName={addNewName} newName={newName} newPhone={newPhone} handleNameChange={handleNameChange} handlePhoneChange={handlePhoneChange} />
       <h2>Numbers</h2>
-      <Persons personToShow={personToShow} />
+      <Persons personToShow={personToShow} deleteChange={deletePersons}/>
     </div>
   )
 }
