@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import './index.css'
 import personService from './services/person'
 
 const Filter = ({searchValue, handleChange}) => {
@@ -29,12 +30,38 @@ const Persons = ({personToShow, deleteChange}) => {
   )
 }
 
+const Notification = ({ message, className }) => {
+  if (message === null) {
+    return null
+  }
+  // console.log(className);
+  // let classVal = className;
+  // if (className === "error") {
+  //   return (
+  //     <div classVal="error">
+  //       {message}
+  //     </div>
+  //   )
+  // }
+  // else if (classVal === "success"){
+    return (
+      <div className={className}>
+        {message}
+      </div>
+    )
+  // }
+
+
+}
+
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [searchValue, setSearchValue] = useState('')
   const [showAll, setShowVal] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('')
+  const [className, setClassName] = useState('')
 
 
 useEffect(() => {
@@ -70,6 +97,22 @@ useEffect(() => {
       if(confirm(`Do you want to delete ${person.name}`)){
         personService.deleteEntries(person.id).then(response => {
           setPersons(persons.filter((person) => person.name != name))
+          setErrorMessage(
+            `${person.name} already deleted from server`
+            )        
+            setTimeout(() => {          
+              setErrorMessage(null)        
+            }, 5000)
+          setClassName('success');
+        })
+        .catch(err => {
+          setErrorMessage(
+            `Could not delete ${person.name} from server`
+            )        
+            setTimeout(() => {          
+              setErrorMessage(null)        
+            }, 5000)
+          setClassName('error');
         })
       }
     }
@@ -89,15 +132,34 @@ useEffect(() => {
           personService.update(person.id, updatedPerson).then(
             response => {
               setPersons(persons.map(existingPerson => updatedPerson.id != existingPerson.id ? existingPerson: updatedPerson))
+              setErrorMessage(
+                `${person.name}'s number updated in server`
+                )        
+                setTimeout(() => {          
+                  setErrorMessage(null)        
+                }, 5000)
+              setClassName('success');
             }
-          )
+          ).catch(err => {
+            setErrorMessage(
+              `${person.name}'s number cannot be updated in server`
+              )        
+              setTimeout(() => {          
+                setErrorMessage(null)        
+              }, 5000)
+            setClassName('error');
+          })
         }
         found = true
       }
 
     })
     if (found) return;
-    let new_id = persons.length + 1;
+    const maxId = persons.reduce((max, person) => {
+      return person.id > max ? person.id : max;
+    }, 0);
+    
+    let new_id = maxId + 1;
     const person = {
       name: newName,
       number: newPhone,
@@ -108,13 +170,30 @@ useEffect(() => {
       setPersons(persons.concat(person));
       setNewName('');
       setNewPhone('');
+      setErrorMessage(
+        `${person.name} added to server`
+        )        
+        setTimeout(() => {          
+          setErrorMessage(null)        
+        }, 5000)
+      setClassName('success');
+    }).catch(err => {
+      setErrorMessage(
+        `${person.name} could not be added to server`
+        ) 
+        setTimeout(() => {          
+          setErrorMessage(null)        
+        }, 5000)
+        setClassName('error');
     })
 
   }
 
   return (
     <div>
+      
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} className={className}/>
       <Filter searchValue={searchValue} handleChange={handleSearchChange} />
       <h2>Add a new</h2>
       <PersonForm addNewName={addNewName} newName={newName} newPhone={newPhone} handleNameChange={handleNameChange} handlePhoneChange={handlePhoneChange} />
