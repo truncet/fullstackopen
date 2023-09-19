@@ -1,38 +1,55 @@
 import { useState, useEffect } from 'react'
 import countriesService from './services/countries'
 
+
+const ShowDetails = ({ country }) => {
+  let languages = Object.values(country.languages);
+  return (
+    <div key={country.name.official}>
+      <h2>{country.name.common}</h2>
+      <p>capital {country.capital}</p>
+      <p>area {country.area}</p>
+
+      <h3>languages:</h3>
+      <ul>
+        {languages.map((language) => (
+          <li key={language}>{language}</li>
+        ))}
+      </ul>
+      <img src={country.flags.png} alt={`Flag of ${country.flags.alt}`} />
+    </div>
+  );
+};
+
 const Countries = ({ allCountries }) => {
+  const [showDetails, setShowDetails] = useState(null);
+
+  const handleShowDetails = (country) => {
+    setShowDetails(country);
+  };
+
   if (allCountries.length > 10) {
-    return (
-      <p>Too many matches, specify another filter</p>
-    );
+    return <p>Too many matches, specify another filter</p>;
   } else if (allCountries.length === 1) {
-    console.log(allCountries[0])
-    let languages = Object.values(allCountries[0].languages);
-    return allCountries.map((country) => (
-      <div key={country.name.official}>
-        <h2>{country.name.common}</h2>
-        <p>capital {country.capital}</p>
-        <p>area {country.area}</p>
-
-        <h3>languages:</h3>
-        <ul>
-        {
-            languages.map((language) =>
-              <li key={language}>{language}</li>
-          )
-        }
-        </ul>
-        <img src={country.flags.png} alt={`Flag of ${country.flags.alt}`} />
+    const languages = Object.values(allCountries[0].languages);
+    return (
+      <div>
+        <ShowDetails country={allCountries[0]} />
       </div>
-    ));
-
+    );
   } else {
     return allCountries.map((country) => (
-      <p key={country.name.official}> {country.name.common}</p>
+      <div key={country.name.official}>
+        <span> {country.name.common} </span>
+        <button onClick={() => handleShowDetails(country)}>Show</button>
+        {showDetails === country && (
+          <ShowDetails country={country} />
+        )}
+      </div>
     ));
   }
 };
+
 
 
 const App = () => {
