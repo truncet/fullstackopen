@@ -2,6 +2,37 @@ import { useState, useEffect } from 'react'
 import countriesService from './services/countries'
 
 
+const GetWeather = ({ country }) => {
+  const [temperature, setTemperature] = useState('');
+  const [windSpeed, setWindSpeed] = useState('');
+  const [iconSrc, setIconSrc] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await countriesService.getWeather(country.latlng[0], country.latlng[1]);
+        setTemperature(response.current.temp - 273.15);
+        setWindSpeed(response.current.wind_speed);
+        setIconSrc(`https://openweathermap.org/img/wn/${response.current.weather[0].icon}@2x.png`)
+      } catch (error) {
+        console.error('Error fetching weather data:', error);
+      }
+    };
+
+    fetchData();
+  }, [country]);
+
+  return (
+    <div>
+      <p>temperature - {temperature}</p>
+      <img src={iconSrc}/>
+      <p>wind {windSpeed}</p>
+    </div>
+    
+  );
+};
+
+
 const ShowDetails = ({ country }) => {
   let languages = Object.values(country.languages);
   return (
@@ -17,6 +48,7 @@ const ShowDetails = ({ country }) => {
         ))}
       </ul>
       <img src={country.flags.png} alt={`Flag of ${country.flags.alt}`} />
+      <GetWeather country={country}/>
     </div>
   );
 };
