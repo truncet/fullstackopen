@@ -34,16 +34,7 @@ const Notification = ({ message, className }) => {
   if (message === null) {
     return null
   }
-  // console.log(className);
-  // let classVal = className;
-  // if (className === "error") {
-  //   return (
-  //     <div classVal="error">
-  //       {message}
-  //     </div>
-  //   )
-  // }
-  // else if (classVal === "success"){
+
     return (
       <div className={className}>
         {message}
