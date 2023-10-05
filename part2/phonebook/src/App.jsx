@@ -133,7 +133,7 @@ useEffect(() => {
             }
           ).catch(err => {
             setErrorMessage(
-              `${person.name}'s number cannot be updated in server`
+              err.response.data.error
               )        
               setTimeout(() => {          
                 setErrorMessage(null)        
@@ -170,7 +170,7 @@ useEffect(() => {
       setClassName('success');
     }).catch(err => {
       setErrorMessage(
-        `${person.name} could not be added to server`
+        err.response.data.error
         ) 
         setTimeout(() => {          
           setErrorMessage(null)        
