@@ -26,7 +26,7 @@ const PersonForm = ({addNewName, newName, newPhone, handleNameChange, handlePhon
 
 const Persons = ({personToShow, deleteChange}) => {
   return (    
-      personToShow.map(person => <p key={person.name}> {person.name} {person.number} <button value={person.name} onClick={deleteChange}>Delete</button></p> )
+      personToShow.map(person => <p key={person.name}> {person.name} {person.number} <button value={person.id} onClick={deleteChange}>Delete</button></p> )
   )
 }
 
@@ -75,19 +75,19 @@ useEffect(() => {
     setShowVal(newFilter === "")
   }
   
-  const getPersonByname = (name) => {
-    return persons.find(person => person.name == name);
+  const getPersonById = (id) => {
+    return persons.find(person => person.id == id);
 
   }
 
   const deletePersons = (event) => {
-    var name = event.target.value;
-    var person = getPersonByname(name);
+    var id = event.target.value;
+    var person = getPersonById(id);
     console.log(person);
     if (person){
       if(confirm(`Do you want to delete ${person.name}`)){
         personService.deleteEntries(person.id).then(response => {
-          setPersons(persons.filter((person) => person.name != name))
+          setPersons(persons.filter((person) => person.id !== id))
           setErrorMessage(
             `${person.name} already deleted from server`
             )        
@@ -146,19 +146,16 @@ useEffect(() => {
 
     })
     if (found) return;
-    const maxId = persons.reduce((max, person) => {
-      return person.id > max ? person.id : max;
-    }, 0);
+
     
-    let new_id = maxId + 1;
     const person = {
       name: newName,
       number: newPhone,
-      id: new_id
     }
     
     personService.create(person).then(response => {
-      setPersons(persons.concat(person));
+      const newPerson = {...person, id:response.id}
+      setPersons([...persons, newPerson]);
       setNewName('');
       setNewPhone('');
       setErrorMessage(
