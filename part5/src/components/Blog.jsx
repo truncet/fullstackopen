@@ -23,6 +23,7 @@ const Blog = ({ blog, user, updateUpvote, deleteBlog }) => {
         {blog.title} {blog.author}
         <Button
           onClick={toggleDetails}
+          id='showDetails'
           text={detailsVisible ? 'Hide Details' : 'Show Details'}
         />
       </p>
@@ -37,11 +38,12 @@ const Blog = ({ blog, user, updateUpvote, deleteBlog }) => {
             upvotes: {blog.upvotes}
             <Button
               text={'upvote'}
+              id='upvotes'
               onClick={() => updateUpvote(blog)}
             />
           </div>
           {blog.user && blog.user.username === user.username
-            ? <Button text="remove" onClick={() => deleteBlog(blog)} />
+            ? <Button text='remove' id='remove' onClick={() => deleteBlog(blog)} />
             : null
           }
         </div>

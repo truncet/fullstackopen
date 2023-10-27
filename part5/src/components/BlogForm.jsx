@@ -9,6 +9,7 @@ const BlogForm = ({ title, author, url, titleChange, authorChange, urlChange, ad
           value={title}
           onChange={titleChange}
           placeholder='title'
+          id='title'
         />
       </div>
       <div>
@@ -17,6 +18,7 @@ const BlogForm = ({ title, author, url, titleChange, authorChange, urlChange, ad
           value={author}
           onChange={authorChange}
           placeholder='author'
+          id='author'
         />
       </div>
       <div>
@@ -25,10 +27,11 @@ const BlogForm = ({ title, author, url, titleChange, authorChange, urlChange, ad
           value={url}
           onChange={urlChange}
           placeholder='url'
+          id='url'
         />
       </div>
 
-      <button type="submit">create</button>
+      <button type="submit" id='create'>create</button>
     </form>
   </div>
 )
