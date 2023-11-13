@@ -1,6 +1,8 @@
 import  { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { createAnecdote } from './../reducers/anecdoteReducer';
+import { addAnecdote } from './../reducers/anecdoteReducer';
+import { setNotification, removeNotification } from '../reducers/notificationReducer';
+
 
 const AnecdoteForm = () => {
   const [newAnecdote, setNewAnecdote] = useState('');
@@ -12,8 +14,13 @@ const AnecdoteForm = () => {
       console.log('Please enter a valid anecdote.');
       return;
     }
-    dispatch(createAnecdote(newAnecdote));
+    dispatch(addAnecdote(newAnecdote));
+    dispatch(setNotification(`You added ${newAnecdote}`))
     setNewAnecdote('');
+    setTimeout(() => {
+      dispatch(removeNotification());
+    }, 5000);
+
   };
 
   return (
