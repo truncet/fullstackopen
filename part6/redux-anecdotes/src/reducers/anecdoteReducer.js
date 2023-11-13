@@ -22,7 +22,6 @@ const initialState = anecdotesAtStart.map(asObject)
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'VOTE':
-      console.log(action.payload)
       // eslint-disable-next-line no-case-declarations
       const id = action.payload.id
       // eslint-disable-next-line no-case-declarations
@@ -30,18 +29,37 @@ const reducer = (state = initialState, action) => {
       
       return updatedState
     case 'CREATE':
-      break
+      // eslint-disable-next-line no-case-declarations
+      const newAnecdote = {
+        content: action.payload.content,
+        id: action.payload.id,
+        votes: 0
+      };
+      return state.concat(newAnecdote);
+      
+    default:
+      return state
 
 
   }
 
-  return state
 }
 
 export const voteId = (id) => {
   return {
     type: 'VOTE',
     payload: {id}
+  }
+}
+
+export const createAnecdote = (anecdote) => {
+  return {
+    type: 'CREATE',
+    payload: {
+      content: anecdote,
+      id: getId(),
+      votes: 0
+    }
   }
 }
 
