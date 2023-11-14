@@ -1,25 +1,23 @@
 import  { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addAnecdote } from './../reducers/anecdoteReducer';
-import { setNotification, removeNotification } from '../reducers/notificationReducer';
+import { createAnecdote } from './../reducers/anecdoteReducer';
+import { setNotificationWithTimeout } from '../reducers/notificationReducer';
 
 
 const AnecdoteForm = () => {
   const [newAnecdote, setNewAnecdote] = useState('');
   const dispatch = useDispatch();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (newAnecdote.trim() === '') {
       console.log('Please enter a valid anecdote.');
       return;
     }
-    dispatch(addAnecdote(newAnecdote));
-    dispatch(setNotification(`You added ${newAnecdote}`))
+    dispatch(createAnecdote(newAnecdote));
+    dispatch(setNotificationWithTimeout(newAnecdote, 5))
     setNewAnecdote('');
-    setTimeout(() => {
-      dispatch(removeNotification());
-    }, 5000);
+
 
   };
 
