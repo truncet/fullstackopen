@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { useNotification } from '../notificationContext';
 import { createAnecdotes } from '../services/requests';
 
 
@@ -8,6 +9,7 @@ const AnecdoteForm = () => {
   const [newAnecdote, setNewAnecdote] = useState('');
   const queryClient = useQueryClient();
 
+  const showNotification = useNotification();
   const addAnecdoteMutation = useMutation({
     mutationFn: createAnecdotes,
     onSuccess: () => {
@@ -19,9 +21,10 @@ const AnecdoteForm = () => {
     event.preventDefault();
     if (newAnecdote.trim().length >= 5) {
       addAnecdoteMutation.mutate({content: newAnecdote, votes:0});
+      showNotification(`${newAnecdote} added`);
       setNewAnecdote('');
     } else {
-      console.log('Anecdote must be at least 5 characters long'); // Replace with proper error handling
+      showNotification("too short anecdote, must have 5 or more length"); // Replace with proper error handling
     }}
 
   return (
